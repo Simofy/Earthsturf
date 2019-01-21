@@ -1,0 +1,116 @@
+<div style="padding-bottom: 30px;">
+
+    <nav id="navbar" class="navbar fixed-top flex-nowrap navbar-light bg-light">
+        <a href="/" class="navbar-brand mr-auto">
+            <i class="icon-globe" aria-hidden="true">Earth's turf</i>
+        </a>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <form action='/'>
+                    <button class="nav-link" type="submit">
+                        <%-data.username%>
+                            <i class="fa fa-user-circle" style="padding-left:6px;"></i>
+                    </button>
+                </form>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="toggle-option" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-cog"></i>
+                </a>
+
+            </li>
+            <li class="nav-item">
+                <form action='/signout' method='post'>
+                    <button class="nav-link" type="submit">
+                        <i class="fa fa-sign-out-alt"></i>
+                    </button>
+
+                </form>
+            </li>
+        </ul>
+    </nav>
+</div>
+<div id="wrapper">
+
+    <div id="menu_bar" class="bg-light">
+        <div id="option-pref-div">
+            <div id="option-pref-text" class="bg-light">
+                <h6>Preference</h6>
+            </div>
+
+            <form id="option-pref-form" ref='uploadForm' class="login100-form validate-form" action='/apply-options' method='post'>
+                <div class="wrap-input100" style="float:right; width: 100px;right: 150px; position: absolute; top: 18px">
+                        <input class="input100"  type="text" id="new_color" name="new_color" required title="1 character minimum">
+                        <span class="focus-input100" data-placeholder="Color"></span>
+                    </div>
+                <label for="option-lan" class="mr-sm-2">Language:</label>
+                <select name="option_lan" id="option-lan" required>
+
+                    <option value="en" <%if(data.options[0].language=="en" ){%>
+                        selected
+                        <%}%>>en</option>
+                    <option value="lt" <%if(data.options[0].language=="lt" ){%>
+                        selected
+                        <%}%>>lt</option>
+                </select>
+                <label for="option-theme" class="mr-sm-2">Theme:</label>
+                <select name="option_theme" id="option-theme" required>
+                    <%data.themes.forEach(theme => {%>
+                        <option value="<%-theme%>" <%if(theme==data.options[0].theme){%>
+                            selected
+                            <%}%>
+                                >
+                                <%-theme%>
+                        </option>
+                        <%});%>
+                </select>
+  
+                <div style="position:absolute;right: 10px;bottom:20px;">
+                    <button class="button_new not-jumpy animated" type="submit">
+                        <i class="fas fa-check-square"></i>
+                        Confirm
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+        <div id="option-acc-div" class="animated-option">
+            <div id="option-acc-text" class="bg-light">
+                <h6>Account</h6>
+            </div>
+
+            <div id="option-acc-form-move" class="animated-option">
+                <form class="bg-light" id="option-acc-form" ref='uploadForm' class="login100-form validate-form " action='/update-account'
+                    method='post'>
+
+
+                    <div class="wrap-input100" style="width: calc(100% - 100px);">
+                        <input class="input100" id="new_username" type="text" name="new_username">
+                        <span class="focus-input100" data-placeholder="Change username"></span>
+                    </div>
+                    <div id="toggle-option-delete-account-div" class="animated-option">
+                        <a class="nav-link" id="toggle-option-delete-account" role="button" aria-haspopup="true" aria-expanded="false">
+                            Other
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </div>
+
+                    <div id="toggle-option-confirm-account-div" class="animated-option">
+                        <button class="button_new not-jumpy animated" type="submit">
+                            <i class="fas fa-check-square"></i>
+                            Confirm
+                        </button>
+                    </div>
+                </form>
+                <form class="bg-light" id="option-acc-del-form" ref='uploadForm' class="login100-form validate-form " action='/delete-account'
+                    method='post'>
+                    <h6 style="position: absolute; bottom:23px;right: 20px; width: 120px">Delete account:</h6>
+                    <button class="button_new not-jumpy animated" type="submit">
+                        <i class="fas fa-check-square"></i>
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        var OSName = "Unknown OS";
+        if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
+        if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
+        if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
+        if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1">
+    <meta name="description" content="Database project">
+    <meta name="author" content="Julius Simas Simutis">
+    <title>Budget buddy</title>
+    <!--=========================================
+		CSS
+		============================================= -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <!-- <link href="css/simple-sidebar.css" rel="stylesheet"> -->
+    <link href="css/prism.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://d30y9cdsu7xlg0.cloudfront.net/png/165968-200.png" />
+    <link rel="stylesheet" type="text/css" href="public/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+
+    <!--===============================================================================================-->
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="public/css/util.css">
+    <link rel="stylesheet" type="text/css" href="public/css/main.css">
+    <!--===============================================================================================-->
+
+    <!--=========================================`
+		JavaScript
+		============================================= -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://hammerjs.github.io/dist/hammer.js"></script>
+    <script src="https://cdn.rawgit.com/hammerjs/jquery.hammer.js/master/jquery.hammer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <!--__________________________________________-->
+    <script src="https://cdn.anychart.com/releases/8.2.1/js/graphics.min.js"></script>
+    <script type="text/javascript" src="public/js/background.js"></script>
+    <script type="text/javascript" src="public/js/supplementary.js"></script>
+    <script type="text/javascript" src="public/js/prism.js"></script>
+    <script type="text/javascript" src="public/js/signup.js"></script>
+</head>
+
+<body id="gestureDetection">
+    <script>
+        <%if(auth != 0 && auth == 1){%>
+        alert("User exist!");
+        <%}%>
+    </script>
+    <!-- Page Content -->
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form ref='uploadForm' class="login100-form validate-form" id='login_auth' action='/signupForm' method='post'>
+                <span class="login100-form-title p-b-26">
+                    Sign Up for
+                    <br />budget buddy
+                </span>
+                <span class="login100-form-title p-b-48">
+                    <i class="fa fa-pie-chart"></i>
+                </span>
+
+                <div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
+                    <input class="input100" type="email" name="email">
+                    <span class="focus-input100" data-placeholder="Email"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Must contain atleast 3 characters">
+                    <input class="input100" type="text" name="nickname" pattern=".{3,10}">
+                    <span class="focus-input100" data-placeholder="Nickname"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Enter password" title="3 characters minimum">
+                    <span class="btn-show-pass">
+                        <i class="zmdi zmdi-eye"></i>
+                    </span>
+                    <input pattern=".{3,10}" class="input100" type="password" id="register_password" name="register_password" title="3 characters minimum">
+                    <span class="focus-input100" data-placeholder="Password"></span>
+                </div>
+
+                <div class="wrap-input100 validate-input" data-validate="Re-enter password">
+                    <span class="btn-show-pass">
+                        <i class="zmdi zmdi-eye"></i>
+                    </span>
+                    <input pattern=".{3,10}" class="input100" type="password" id="register_pass_confirm" name="register_pass_confirm" title="3 characters minimum">
+                    <span class="focus-input100" data-placeholder="Re-enter password"></span>
+                </div>
+
+                <p class="notice">
+                    By clicking on Sign up, you agree to
+                    <a href="/eng/legal/end-user-agreement/" target="_blank" style="color:#e66587">budget buddy's terms &amp; conditions</a>
+                    and
+                    <a href="/eng/legal/privacy-policy/" target="_blank" style="color: #f09458">privacy policy</a>
+                </p>
+
+                <div class="container-login100-form-btn">
+                    <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <button class="login100-form-btn">
+                            Sign up
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <div class="text-center p-t-15">
+                <span class="txt1">
+                    Have account?
+                </span>
+                <form action="/" method="post">
+                    <button type="submit" class="txt2">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Feature Area -->
+
+    <!-- Start footer Area -->
+
+    <footer id="footer" class="container-fluid col-lg-12" style="background-color: white">
+
+        <div class="footer-content justify-content-between text-center flex-wrap">
+            <div class="copy-right-text">Copyright &copy; 2018 | All rights reserved to Julius Simas Simutis. </div>
+            <!-- <div class="logo">
+						<img src="img/logo.png" alt="">
+					</div> -->
+        </div>
+    </footer>
+
+
+    <!-- End footer Area -->
+    <div id="backgroundSketch" style="width: 100%; height: 100%;position: fixed !important;z-index: -100 !important;background :rgb(102, 102, 153)">
+    </div>
+</body>
+<script type="text/javascript" src="/public/js/mobile.js"></script>
+<script src="/public/js/main.js"></script>
+
+</html>

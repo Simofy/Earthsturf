@@ -1,0 +1,73 @@
+/*!
+ * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
+ */
+
+body {
+  overflow-y: hidden;
+}
+
+#wrapper {
+  padding-top: 0;
+  -webkit-transition: all 0.35s ease;
+  -moz-transition: all 0.35s ease;
+  -o-transition: all 0.35s ease;
+  transition: all 0.35s ease;
+}
+
+#wrapper.toggled {
+  padding-top: 250px;
+}
+
+#sidebar-wrapper {
+  z-index: 1000;
+  position: fixed;
+  top: 250px;
+  height: 0;
+  width: 100vh;
+  margin-top: -250px;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  -webkit-transition: all 0.35s ease;
+  -moz-transition: all 0.35s ease;
+  -o-transition: all 0.35s ease;
+  transition: all 0.35s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  height: 250px;
+}
+
+/* #page-content-wrapper {
+  width: 100% !important;
+  position: absolute;
+  
+  padding-bottom: 60px !important;
+}
+
+#wrapper.toggled #page-content-wrapper {
+  position: absolute;
+  margin-right: -250px ;
+} */
+
+
+/* Sidebar Styles */
+
+  #page-content-wrapper {
+    padding: 0px;
+    /* position: relative; */
+  }
+  /*-----------*/
+  #wrapper {
+    padding-top: 0;
+  }
+  #wrapper.toggled {
+    padding-top: 250px;
+  }
+  #sidebar-wrapper {
+    width: 0;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    width: 250px;
+  }
