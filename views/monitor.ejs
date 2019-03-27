@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en"  style="width: 100%; height: 100%;">
+
+<head>
+    <script src="/public/js/socket.io.js"></script>
+    <script>
+        (function () {
+	Date.prototype.toSQL = Date_toYMD;
+
+	function Date_toYMD() {
+		var year, month, day, hour, minute, second;
+		year = String(this.getFullYear());
+		month = String(this.getMonth() + 1);
+		if (month.length == 1) {
+			month = "0" + month;
+		}
+		day = String(this.getDate());
+		if (day.length == 1) {
+			day = "0" + day;
+		}
+		hour = String(this.getHours());
+		if (hour.length == 1) {
+			hour = "0" + hour;
+		}
+		minute = String(this.getMinutes());
+		if (minute.length == 1) {
+			minute = "0" + minute;
+		}
+		second = String(this.getSeconds());
+		if (second.length == 1) {
+			second = "0" + second;
+		}
+		return year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + ".0";
+	}
+})();
+        var socket;
+	</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1">
+    <meta name="description" content="Block-chain project">
+    <meta name="author" content="Julius Simas Simutis">
+    <title>Earth's turf</title>
+    <!--__________________________________________-->
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/css/fontawesome-all.min.css">
+    <link rel='stylesheet' href='/public/css/mapbox-gl.css'>
+    <link rel="icon" type="image/png" href="/public/img/logo.png">
+    <link rel="stylesheet" href="/public/addons/mfglabs-icons/css/mfglabs_iconset.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/vis.min.css">
+    <link rel="stylesheet" type="text/css" href="/public/css/app.css">
+    <!--__________________________________________-->
+    <!--__________________________________________-->
+    <link rel="stylesheet" type="text/css" href="/public/css/themes/theme.default.css">
+    <link rel="stylesheet" href="/public/addons/pager/jquery.tablesorter.pager.css">
+
+    <!--__________________________________________-->
+    <script src='/public/js/mapbox-gl.js'></script>
+    <script src="/public/js/vis.min.js"></script>
+    <script src="/public/js/jquery-3.3.1.min.js"></script>
+    <script src="/public/js/hammer.js"></script>
+    <script src="/public/js/jquery.hammer.js"></script>
+    <script src="/public/js/popper.min.js"></script>
+    <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/jquery.tablesorter.js"></script>
+    <script src="/public/js/jquery.tablesorter.widgets.js"></script>
+    <script src="/public/addons/pager/jquery.tablesorter.pager.js"></script>
+    <script src="/public/js/anychart.js" type="text/javascript"></script>
+    <!--__________________________________________-->
+    
+    <script src="/public/js/monitor.js" type="text/javascript"></script>
+    <style>
+    .box{
+        height: 100%; border: solid #333 1px; margin:5px;
+    }
+    #cpu-container{
+        width: 100%;
+        height: 100%;
+    }
+
+    td{
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .button-backup{
+        position: absolute;
+        left: 0;
+        bottom: 10px;
+    }
+    .slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #333;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #333;
+  cursor: pointer;
+}
+    </style>
+</head>
+
+<body style="width: 100%; height: 100%; padding: 15px;">
+    <div style="height: 40px;">
+
+        <h2>Dashboard</h2>
+    </div>
+        <div style="height: calc(100% - 40px);">
+    <div class="row" style="height: 50%; padding: 5px;">
+        <div class="col-md box" >
+            <h3>Clients:</h3>
+            <table id="main-table" class="tablesorter tablesorter-default hasFilters" style="margin:0; " role="grid">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody id="main-table-data">
+                </tbody>
+            </table>
+            
+        </div>
+        <div class="col-md-6 box">
+                <h3 style="position: absolute; left:0; z-index: 100; margin-left:15px;">CPU:</h3>
+                <div id="cpu-container"></div>
+        </div>
+        <div class="col-md-3 box" > 
+            <h3>Blockshain:</h3>
+                <table id="block-table" class="tablesorter tablesorter-default hasFilters" style="margin:0;table-layout: fixed;" role="grid">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hash</th>
+                        </tr>
+                    </thead> 
+                    <tbody id="block-table-data">
+                    </tbody>
+                </table>
+        </div>
+    </div>
+    <div class="row"  style="height: 50%; padding: 5px;">
+            <div class="col-md box" style="position: relative;">
+                <h3>Backup & Restore:</h3>
+                <table id="backup-table" class="tablesorter tablesorter-default hasFilters" style="margin:0;table-layout: fixed;" role="grid">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead> 
+                    <tbody id="backup-table-data">
+                    </tbody>
+                </table>
+                <div class="button-backup">
+                    <button class="button_new not-jumpy animated" name="backup" style="width: auto">
+                        <i class="fas fa-check-square"></i>
+                        Backup current block-chain
+                    </button>
+                </div>
+            </div>
+            <div class="col-md box">
+                    <h3>Options:</h3>
+                    <p>User count:</p>
+                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+            </div>
+    </div>
+    
+</div>
+</body>
+
+</html>

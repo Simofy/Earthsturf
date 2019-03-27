@@ -37,7 +37,7 @@ function getSQLdate() {
 	// 	('00' + date.getDate()).slice(-2);
 	return date;
 }
-
+var password = 'alio valio ir internetas';
 // Public Key :  033c5db531f7c56b
 // Private Key :  07d5a533b4f2098e
 
@@ -53,13 +53,19 @@ const bcrypt = require('bcrypt');
 var session = require('express-session');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-
+const si = require('systeminformation');
 var soap = require('soap');
 
 
+var Ddos = require('ddos')
+var ddos = new Ddos({burst:10, limit:1000});
+app.use(ddos.express)
 
 
+//var admin;
+//var connections = {};
 server.listen(3000);
+console.log("localhost:3000")
 const hashRoundNumb = 10;
 var allThemes = [];
 fs.readdirSync("public/css/themes/").forEach(file => {
@@ -67,8 +73,6 @@ fs.readdirSync("public/css/themes/").forEach(file => {
 		allThemes.push(file.split('.')[1]);
 });
 
-//$2b$10$pZjd9uEAldSrhEfoM22io.tMXT6ns650kn4/eIzf05McDkUBGCUgS
-//app.use(express.static('public'));
 app.use("/public", express.static(__dirname + "/public"));
 //app.use(express.static(__dirname+ 'public'));
 app.use(session({
@@ -185,7 +189,6 @@ var con = new Database({
 	database: 'budgetdb',
 	insecureAuth: true
 });
-//console.log("LOXAS");
 app.post('/login', function (req, res) {
 	//form input
 	//___________________________________
@@ -256,54 +259,131 @@ app.post('/delete-account', function (req, res) {
 	}).catch(err => {});
 	res.redirect('/');
 });
-app.post('/wsdl', function (req, res) {
-	console.log("WAT")
-	//var barcode = req.query.barcode || req.body.barcode;
-	var wsdlUrl = 'http://www.searchupc.com/service/UPCSearch.asmx?wsdl';
-	soap.createClient('localhost:3000/wsdl', function (err, soapClient) {
-		// we now have a soapClient - we also need to make sure there's no `err` here. 
-		if (err) {
-			return res.status(500).json(err);
-		}
-		soapClient.GetProduct({
-			upc: "",
-			accesstoken: '924646BB-A268-4007-9D87-2CE3084B47BC'
-		}, function (err, result) {
-			if (err) {
-				return res.status(500).json(err);
-			}
-			// now we have the response, but the webservice returns it as a CSV string. Let's use the parser
-			var responseAsCsv = result.GetProductResult;
-			csv.parse(responseAsCsv, {
-				columns: true
-			}, function (err, parsedResponse) {
-				if (err) {
-					return res.status(500).json(err);
-				}
-				// finally, we're ready to return this back to the client.
-				return res.json(parsedResponse);
-			});
-		});
-
-	});
-
+app.get('/monitor', function (req, res) {
+	let user_id = req.session.id_user;
+	if (user_id == 1) {
+		res.render("monitor");
+	} else {
+		res.redirect('/');
+	}
 });
+// app.post('/wsdl', function (req, res) {
+// 	console.log("WAT")
+// 	//var barcode = req.query.barcode || req.body.barcode;
+// 	var wsdlUrl = 'http://www.searchupc.com/service/UPCSearch.asmx?wsdl';
+// 	soap.createClient('localhost:3000/wsdl', function (err, soapClient) {
+// 		// we now have a soapClient - we also need to make sure there's no `err` here. 
+// 		if (err) {
+// 			return res.status(500).json(err);
+// 		}
+// 		soapClient.GetProduct({
+// 			upc: "",
+// 			accesstoken: '924646BB-A268-4007-9D87-2CE3084B47BC'
+// 		}, function (err, result) {
+// 			if (err) {
+// 				return res.status(500).json(err);
+// 			}
+// 			// now we have the response, but the webservice returns it as a CSV string. Let's use the parser
+// 			var responseAsCsv = result.GetProductResult;
+// 			csv.parse(responseAsCsv, {
+// 				columns: true
+// 			}, function (err, parsedResponse) {
+// 				if (err) {
+// 					return res.status(500).json(err);
+// 				}
+// 				// finally, we're ready to return this back to the client.
+// 				return res.json(parsedResponse);
+// 			});
+// 		});
+
+// 	});
+
+// });
 
 //___________BLOCKCHAIN PART_________
+
+
+async function sendStatistics(admin) {
+	if(admin != undefined){
+		let data = {};
+		try {
+			data.cpu = await si.cpuCurrentspeed();
+			data.load = (await si.currentLoad()).currentload;
+			data.block = blockchain;
+			data.backup = fs.readdirSync("backup");
+			//data.network = await si.networkConnections();
+			data.connections = [];
+			var sockets = io.sockets.sockets;
+			for(var socketId in sockets)
+				data.connections.push({id:socketId, ip:sockets[socketId].request.connection.remoteAddress})
+		} catch (e) {
+			console.log(e)
+		}
+		admin.send(data);
+		//setTimeout(sendStatistics, 2*1000);
+	}
+}
+
+io.of('/monitor').on('connection', function(client){
+	client.on('monitor-get', function (data) {
+		// if(admin != client){
+		// 	admin = client;
+		// 	setTimeout(sendStatistics, 2*1000);
+		// }
+		sendStatistics(client)
+
+
+	});
+	client.on('backup-blockchain', (data) => {
+		let date = new Date();
+		let content = date.getTime().toString() + '\n' + CryptoJS.AES.encrypt(JSON.stringify(blockchain), password).toString();
+		fs.writeFile("backup/"+date.getTime(), content, function(err) {
+			if(err) {
+					return console.log(err);
+			}
+		});
+	});
+	client.on('set-blockchain', (data) => {
+		
+		fs.readFile('backup/' + data.id, "utf8",  function(err, data) {
+			let index = data.indexOf('\n')
+			let date = data.slice(0, index - 1);
+			let encoded = data.slice(index + 1);
+			blockchain = JSON.parse(CryptoJS.AES.decrypt(encoded, password).toString(CryptoJS.enc.Utf8))
+			io.emit('new-chain', blockchain);
+		});
+	});
+	client.on('leave', function (data) {
+		admin = undefined;
+	});
+    // client.on('my-message', function (data) {
+    //     io.of('my-namespace').emit('my-message', data);
+    //     // or socket.emit(...)
+    //     console.log('broadcasting my-message', data);
+    // });
+});
 io.on('connection', function (client) {
 	console.log('Client connected...');
 
 	client.on('join', function (data) {
+		//connections[client.id] = {"id":client.id, "ip":"0.0.0"};
 		client.emit('first-time', blockchain);
-		//console.log(data);
 	});
-	client.on('sendNewData', function (data) {
-		let block = generateNextBlock(data);
-		if (addBlock(block)) {
-			io.emit('new-chain', blockchain);
-			console.log(data);
-		} else {
+	client.on('leave', function (data) {
+		
+		//connections[client.id] = undefined;
+	});
 
+	client.on('sendNewData', function (data) {
+		if(data !== []){
+
+			let block = generateNextBlock(data);
+			if (addBlock(block)) {
+				io.emit('new-chain', blockchain);
+				//console.log(data);
+			} else {
+				
+			}
 		}
 
 	});

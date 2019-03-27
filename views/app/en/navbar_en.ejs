@@ -40,7 +40,7 @@
 
             <form id="option-pref-form" ref='uploadForm' class="login100-form validate-form" action='/apply-options' method='post'>
                 <div class="wrap-input100" style="float:right; width: 100px;right: 150px; position: absolute; top: 18px">
-                        <input class="input100"  type="text" id="new_color" name="new_color" required title="1 character minimum">
+                        <input class="input100" value="<%-data.options[0].color%>" type="text" id="new_color" name="new_color" required title="1 character minimum">
                         <span class="focus-input100" data-placeholder="Color"></span>
                     </div>
                 <label for="option-lan" class="mr-sm-2">Language:</label>

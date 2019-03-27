@@ -15,20 +15,16 @@ $(function () {
   });
   socket.on('new-chain', function (data) {
     if (mainBlockChain.length < data.length) {
+      // $.ajax({
+      //   url: 'wsdl',
+      //   data: {
+      //     data: ''
+      //   },
+      //   success: function (data) {
+      //     console.log("data")
 
-
-      $.ajax({
-        url: 'wsdl',
-        data: {
-          data: ''
-        },
-        success: function (data) {
-          console.log("data")
-
-        }
-      })
-
-
+      //   }
+      // })
       mainBlockChain = data;
       recomputeMap(mainBlockChain);
     }

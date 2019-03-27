@@ -264,7 +264,10 @@ $(function () {
     }
   });
   $('[name="submit"]').click(function () {
-    socket.emit('sendNewData', data_to_send);
+    if(data_to_send.length > 0){
+
+      socket.emit('sendNewData', data_to_send);
+    }
     data_to_send = [];
   });
   $('[name="element_id"]').click(function () {
